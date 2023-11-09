@@ -70,6 +70,18 @@ yum localinstall --nogpgcheck VirtualBox-7.0-7.0.12_159484_el7-1.x86_64.rpm
 virtualbox --version
 ```
 
+4. Результат (неудачный)
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt1.png)
+
+5. Проблема - отсутствет модуль ядра. Исправим этот недостаток:
+
+```
+yum install -y "kernel-devel-uname-r == $(uname -r)"
+yum install -y gcc perl make
+sudo /sbin/rcvboxdrv setup
+```
+
+
 
 
 #### [Vagrant](https://github.com/netology-code/devops-materials), рекомендуем версию 2.3.4(в более старших версиях могут возникать проблемы интеграции с ansible)
