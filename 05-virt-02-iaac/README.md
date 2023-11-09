@@ -46,14 +46,39 @@ Ansible-pull - режим, при котором текущая конфигур
 
 Главный риск при методе pull - гипотетическое нарушение каких-нибудь зависимостей или версий пакетов (риск минимален, но все же присутствует).
 
-## Задача 3
+## Задача 3 Установите на личный linux-компьютер(или учебную ВМ с linux):
 
-Установите на личный linux-компьютер(или учебную ВМ с linux):
+#### [VirtualBox](https://www.virtualbox.org/)
 
-- [VirtualBox](https://www.virtualbox.org/),
-- [Vagrant](https://github.com/netology-code/devops-materials), рекомендуем версию 2.3.4(в более старших версиях могут возникать проблемы интеграции с ansible)
-- [Terraform](https://github.com/netology-code/devops-materials/blob/master/README.md)  версии 1.5.Х (1.6.х может вызывать проблемы с яндекс-облаком),
-- Ansible.
+1. Создание директории для выполнения домашнего задания:
+
+```
+mkdir virtualisation
+cd virtualisation
+```
+
+2. Установка Virtualbox:
+
+```
+wget https://download.virtualbox.org/virtualbox/7.0.12/VirtualBox-7.0-7.0.12_159484_el7-1.x86_64.rpm
+yum localinstall --nogpgcheck VirtualBox-7.0-7.0.12_159484_el7-1.x86_64.rpm
+```
+
+3. Проверка:
+
+```
+virtualbox --version
+```
+
+
+
+#### [Vagrant](https://github.com/netology-code/devops-materials), рекомендуем версию 2.3.4(в более старших версиях могут возникать проблемы интеграции с ansible)
+
+
+#### [Terraform](https://github.com/netology-code/devops-materials/blob/master/README.md)  версии 1.5.Х (1.6.х может вызывать проблемы с яндекс-облаком),
+
+
+#### Ansible
 
 *Приложите вывод команд установленных версий каждой из программ, оформленный в Markdown.*
 
