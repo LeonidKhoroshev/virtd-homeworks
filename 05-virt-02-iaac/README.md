@@ -73,32 +73,54 @@ virtualbox --version
 4. Результат (неудачный)
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt1.png)
 
-5. Проблема - отсутствет модуль ядра. Исправим этот недостаток:
-
+5. Траблшутинг:
+ - модуль ядра
 ```
 yum install -y "kernel-devel-uname-r == $(uname -r)"
 yum install -y gcc perl make
 sudo /sbin/rcvboxdrv setup
 ```
+- несуществующий путь переменной XDG_RUNTIME_DIR 
+```
+export XDG_RUNTIME_DIR=/root/virtualisation
+chmod 777 /root/virtualisation
+```
+- проблемы с экраном
+```
+QT_QPA_PLATFORM=offscreen /usr/lib/virtualbox/vboxdrv.sh
+export QT_QPA_PLATFORM=offscreen
+systemctl restart vboxdrv
+```
+- включение GUI
+```
+startx
+```
 
+6. Посторная проверка:
+```
+virtualbox --version
+
+```
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt2.png)
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt3.png)
 
 
 
 #### [Vagrant](https://github.com/netology-code/devops-materials), рекомендуем версию 2.3.4(в более старших версиях могут возникать проблемы интеграции с ansible)
 
-1. Установка
+1. Установка:
 ```
 yum install -y https://hashicorp-releases.yandexcloud.net/vagrant/2.3.4/vagrant-2.3.4-1.x86_64.rpm
 ```
 
-2. Проверка
+2. Проверка:
 
 ```
 vagrant --version
 Vagrant 2.3.4
 ```
 
-3. Настройка работы Vagrant с Virtualbox
+3. Настройка работы Vagrant с Virtualbox:
 
 ```
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
