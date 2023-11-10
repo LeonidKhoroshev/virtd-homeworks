@@ -86,6 +86,23 @@ sudo /sbin/rcvboxdrv setup
 
 #### [Vagrant](https://github.com/netology-code/devops-materials), рекомендуем версию 2.3.4(в более старших версиях могут возникать проблемы интеграции с ansible)
 
+1. Установка
+```
+yum install -y https://hashicorp-releases.yandexcloud.net/vagrant/2.3.4/vagrant-2.3.4-1.x86_64.rpm
+```
+
+2. Проверка
+
+```
+vagrant --version
+Vagrant 2.3.4
+```
+
+3. Настройка работы Vagrant с Virtualbox
+
+```
+export VAGRANT_DEFAULT_PROVIDER=virtualbox
+```
 
 #### [Terraform](https://github.com/netology-code/devops-materials/blob/master/README.md)  версии 1.5.Х (1.6.х может вызывать проблемы с яндекс-облаком),
 
