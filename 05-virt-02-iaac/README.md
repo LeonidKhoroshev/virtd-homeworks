@@ -179,6 +179,30 @@ VBoxManage.exe modifyvm "454c55b4-a66e-48ee-8ea7-3cdf8d9b07c6" --nested-hw-virt 
 ```
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt5.png)
 
+2. Переходим в Centos7 и через vagrant разворачимаем виртуальную машину через файл-образ "bento/ubuntu-20.04":
+- скачиваем файл-образ "bento/ubuntu-20.04"
+```
+wget https://app.vagrantup.com/bento/boxes/ubuntu-20.04/versions/202309.09.0/providers/virtualbox/unknown/vagrant.box
+```
+- добавляем его в в список образов Vagrant
+```
+vagrant box add bento/ubuntu-20.04 ./vagrant.box
+vagrant box list
+bento/ubuntu-20.04 (virtualbox, 0)
+```
+- скачиваем vagrantfile, рассмотренный в лекции
+```
+wget https://github.com/netology-code/virt-video-code/blob/main/vagrant/Vagrantfile
+```
+- поднимаем виртуальную машину
+```
+vagrant up
+```
+- проверяем
+```
+vagrant ssh
+```
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt6.png)
 
 
 - Создайте виртуальную машину.
@@ -199,7 +223,4 @@ Error: The requested URL returned error: 404:
 1. Скачайте с [сайта](https://app.vagrantup.com/bento/boxes/ubuntu-20.04) файл-образ "bento/ubuntu-20.04".
 2. Добавьте его в список образов Vagrant: "vagrant box add bento/ubuntu-20.04 <путь к файлу>".
 
-Важно!: Если ваша хостовая рабочая станция - это windows ОС, то у вас могут возникнуть проблемы со вложенной виртуализацией.  [способы решения](https://www.comss.ru/page.php?id=7726)  . Если вы устанавливали hyper-v или docker desktop то  все равно может возникать ошибка: Stderr: VBoxManage: error: AMD-V VT-X is not available (VERR_SVM_NO_SVM) . Попробуйте в этом случае выполнить в windows от администратора команду: "bcdedit /set hypervisorlaunchtype off" и перезагрузиться
-
-***Приложите скриншоты в качестве решения на эту задачу. Допускается неполное выполнение данного задания если не сможете совладать с Windows.*** 
 
