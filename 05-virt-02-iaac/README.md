@@ -48,6 +48,8 @@ Ansible-pull - режим, при котором текущая конфигур
 
 ## Задача 3 Установите на личный linux-компьютер(или учебную ВМ с linux):
 
+Это и последующие задания выполнены на виртуальной машине под управлением Centos7, развернутой в VirtulaBox, хостовая ОС - Windows10.
+
 #### [VirtualBox](https://www.virtualbox.org/)
 
 1. Создание директории для выполнения домашнего задания:
@@ -161,6 +163,23 @@ ansible 2.9.27
 ## Задача 4 
 
 Воспроизведите практическую часть лекции самостоятельно.
+1. Проверяем возможность виртуализации:
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt4.png)
+
+По умолчанию такая возможность недоступна, следовательно необходимо включить Nested VT-x, для чего переходим в командную строку хостовой ОС:
+```
+cd C:\Program Files\Oracle\VirtualBox
+VBoxManage.exe list vms
+"Ansible" {454c55b4-a66e-48ee-8ea7-3cdf8d9b07c6}
+"test_for_Ansible1" {bf9abaca-e2a1-40c5-ad3c-7c5ef9539a2c}
+"test_for_Ansible2" {f55e1805-d917-4d30-bdd8-9fe7145ad2cb}
+"metasploitable" {2b4b56f8-0f91-489d-8a39-040070fab6b8}
+"kali-linux-2023.2-virtualbox-amd64" {f43a94b9-4908-4cf7-bab9-4584b7c5473c}
+VBoxManage.exe modifyvm "454c55b4-a66e-48ee-8ea7-3cdf8d9b07c6" --nested-hw-virt on
+```
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt5.png)
+
+
 
 - Создайте виртуальную машину.
 - Зайдите внутрь ВМ, убедитесь, что Docker установлен с помощью команды
