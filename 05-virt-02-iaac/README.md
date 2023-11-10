@@ -126,10 +126,35 @@ Vagrant 2.3.4
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
 ```
 
-#### [Terraform](https://github.com/netology-code/devops-materials/blob/master/README.md)  версии 1.5.Х (1.6.х может вызывать проблемы с яндекс-облаком),
+#### [Terraform](https://github.com/netology-code/devops-materials/blob/master/README.md)  версии 1.5.Х (1.6.х может вызывать проблемы с яндекс-облаком):
+
+1. Установка:
+```
+wget https://hashicorp-releases.yandexcloud.net/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip
+unzip terraform_1.5.7_linux_amd64.zip
+mv terraform /usr/local/bin/
+```
+
+2. Проверка:
+```
+terraform --version
+Terraform v1.5.7
+on linux_amd64
+```
 
 
 #### Ansible
+
+Ansible установлен в рамках выполнения предыдущих домашних работ
+```
+ansible --version
+ansible 2.9.27
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = [u'/root/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python2.7/site-packages/ansible
+  executable location = /bin/ansible
+  python version = 2.7.5 (default, Jun 20 2023, 11:36:40) [GCC 4.8.5 20150623 (Red Hat 4.8.5-44)]
+```
 
 *Приложите вывод команд установленных версий каждой из программ, оформленный в Markdown.*
 
