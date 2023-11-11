@@ -203,6 +203,8 @@ vagrant up
 vagrant ssh
 ```
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt6.png)
+- также проверяем "для наглядности" в GUI Linux
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt7.png)
 
 
 - Создайте виртуальную машину.
@@ -210,17 +212,6 @@ vagrant ssh
 ```
 docker ps,
 ```
-Vagrantfile из лекции и код ansible находятся в [папке](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-02-iaac/src).
 
-Примечание. Если Vagrant выдаёт ошибку:
-```
-URL: ["https://vagrantcloud.com/bento/ubuntu-20.04"]     
-Error: The requested URL returned error: 404:
-```
-
-выполните следующие действия:
-
-1. Скачайте с [сайта](https://app.vagrantup.com/bento/boxes/ubuntu-20.04) файл-образ "bento/ubuntu-20.04".
-2. Добавьте его в список образов Vagrant: "vagrant box add bento/ubuntu-20.04 <путь к файлу>".
 
 
