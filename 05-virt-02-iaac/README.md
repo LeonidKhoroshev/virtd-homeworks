@@ -206,18 +206,75 @@ vagrant ssh
 - также проверяем "для наглядности" в GUI Linux
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt7.png)
 
-- проверяем, установился ли docker
-![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt8.png)
-Docker не установлен, вероятная причина - команда `vagrant up` отработала не до конца из-за таймаута, так как ввиду скромных возможностей домашнего железа, развертка виртуальной машины Ubuntu в Virtualbox, установленный в Centos7, развернутой в свою очередь в Virtualbox уже в хостовой Windows 10 происходит крайне медленно и не с первого раза.
+-  напишем файлы для автоматической установки docker по аналогии с видеоматериалами данного занятия:
+inventory
+```
+nano inventory
+[nodes:children]
+manager
+worker
+
+[manager]
+server1.netology ansible_host=127.0.0.1 ansible_port=20022 ansible_user=vagrant
+
+[worker]
+```
+
+plaubook.yml
+```
+nano playbook.yml
+---
+- name: 'Playbook'
+  hosts: nodes
+  become: yes
+  become_user: root
+  remote_user: vagrant
+
+  tasks:
+    - name: Installing tools
+      apt:
+        package: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - git
+        - curl
+
+    - name: Installing docker
+      shell: curl -fsSL get.docker.com -o get-docker.sh && chmod +x get-docker.sh && ./get-docker.sh
+
+    - name: Add the current user to docker group
+      user:
+        name: vagrant
+        append: yes
+        groups: docker
+```
+
+- корректируем конфигурационный файл ansible.cfg также в соответствии с лекцией:
+```
+[defaults]
+inventory=./inventory
+deprecation_warnings=False
+command_warnings=False
+ansible_port=22
+interpreter_python=/usr/bin/python3
+host_key_checking = False
+```
 
 - настраиваем виртуальную машину:
 ```
 vagrant provision
 ```
 
-Примечание: основная проблема при выполнении домашнего задания связана со "сверхусилиями" процессора при запуске ansible playbook
+Основная проблема при выполнении домашнего задания связана со "сверхусилиями" процессора при запуске ansible playbook
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt9.png)
 Virtualbox потребляет все доступные ресурсы ЦПУ.
 
 Внутри виртуальной машины ситуация еще хуже
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt10.png)
+
+Для эксперимента провел попытку установки docker вручную, на что система показала то, что установка произведена:
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt11.png)
+Однако по причине нехватки вычислительных мощностей запустить docker так и не удалось:
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt12.png)
+
