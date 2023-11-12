@@ -98,7 +98,7 @@ systemctl restart vboxdrv
 startx
 ```
 
-6. Посторная проверка:
+6. Повторная проверка:
 ```
 virtualbox --version
 
@@ -215,11 +215,6 @@ Docker не установлен, вероятная причина - коман
 vagrant provision
 ```
 
-- Создайте виртуальную машину.
-- Зайдите внутрь ВМ, убедитесь, что Docker установлен с помощью команды
-```
-docker ps,
-```
-
-
-
+Примечание: основная проблема при выполнении домашнего задания связана со "сверхусилиями" процессора при запуске ansible playbook
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt9.png)
+Virtualbox потребляет все доступные ресурсы ЦПУ.
