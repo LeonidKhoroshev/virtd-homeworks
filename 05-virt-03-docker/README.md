@@ -6,6 +6,8 @@
 
 #### Cоздайте свой репозиторий на https://hub.docker.com
 
+Репозиторий создан в рамках выполнения предыдущих домашних работ
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker1.png)
 
 - выберите любой образ, который содержит веб-сервер Nginx;
 - создайте свой fork образа;
