@@ -218,3 +218,6 @@ vagrant provision
 Примечание: основная проблема при выполнении домашнего задания связана со "сверхусилиями" процессора при запуске ansible playbook
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt9.png)
 Virtualbox потребляет все доступные ресурсы ЦПУ.
+
+Внутри виртуальной машины ситуация еще хуже
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt10.png)
