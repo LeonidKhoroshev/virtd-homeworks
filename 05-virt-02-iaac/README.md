@@ -206,6 +206,14 @@ vagrant ssh
 - также проверяем "для наглядности" в GUI Linux
 ![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt7.png)
 
+- проверяем, установился ли docker
+![alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-02-iaac/virt/virt8.png)
+Docker не установлен, вероятная причина - команда `vagrant up` отработала не до конца из-за таймаута, так как ввиду скромных возможностей домашнего железа, развертка виртуальной машины Ubuntu в Virtualbox, установленный в Centos7, развернутой в свою очередь в Virtualbox уже в хостовой Windows 10 происходит крайне медленно и не с первого раза.
+
+- настраиваем виртуальную машину:
+```
+vagrant provision
+```
 
 - Создайте виртуальную машину.
 - Зайдите внутрь ВМ, убедитесь, что Docker установлен с помощью команды
