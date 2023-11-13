@@ -1,4 +1,4 @@
-
+![2023-11-13_17-16-38](https://github.com/LeonidKhoroshev/virtd-homeworks/assets/114744186/6b961108-b119-43c5-b66d-c5493a315b2a)
 ## Домашнее задание к занятию 3. «Введение. Экосистема. Архитектура. Жизненный цикл Docker-контейнера» - Леонид Хорошев
 
 
@@ -50,6 +50,12 @@ docker run  -d custom-nginx
 docker ps -a
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker2.png)
+
+Проверяем отображение страницы через браузер
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker4.png)
+Выглядит странно, проверяем корректность данных непосредственно внутри контейнера
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker5.png)
+Внутри запущенного контейнера содержание страницы index.html отображается верно, видимо что-то со шрифтами.
 
 #### Публикуем созданный fork [custom-nginx](https://hub.docker.com/r/leonid1984/custom-nginx) в своём репозитории
 ```
