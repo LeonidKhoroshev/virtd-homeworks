@@ -14,13 +14,21 @@
 docker pull nginx
 ```
 #### Cоздаем свой fork образа с требуемой в задании функциональностью
+
+Создаем dockerfile на основе скачанного образа
 ```
 nano dockerfile
+
+FROM nginx
+LABEL maintainer = khoroshevlv@gmail.com
+COPY index.html /var/www/html/index.html
+COPY index.html /usr/share/nginx/html/index.html
 ```
 
-- реализуйте функциональность:
-запуск веб-сервера в фоне с индекс-страницей, содержащей HTML-код ниже:
+Создаем файл index.html, отвечающий условиям задания
 ```
+nano index.html
+
 <html>
 <head>
 Hey, Netology
@@ -31,7 +39,23 @@ Hey, Netology
 </html>
 ```
 
-Опубликуйте созданный fork в своём репозитории и предоставьте ответ в виде ссылки на https://hub.docker.com/username_repo.
+Собираем контейнер
+```
+docker build -t custom-nginx
+```
+
+Проверяем, что он работает
+```
+docker run  -d custom-nginx
+docker ps -a
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker2.png)
+
+#### Публикуем созданный fork [custom-nginx](https://hub.docker.com/r/leonid1984/custom-nginx) в своём репозитории
+```
+docker push leonid1984/custom-nginx
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker3.png)
 
 ## Задача 2
 
