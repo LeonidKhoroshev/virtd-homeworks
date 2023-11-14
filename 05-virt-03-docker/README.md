@@ -45,7 +45,7 @@ docker build -t custom-nginx
 
 Проверяем, что он работает
 ```
-docker run  -d custom-nginx
+docker run -p 80:80  -d custom-nginx
 docker ps -a
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker2.png)
@@ -84,17 +84,57 @@ docker push leonid1984/custom-nginx
 
 ## Задача 3
 
-- Запустите первый контейнер из образа ***centos*** c любым тегом в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера.
-- Запустите второй контейнер из образа ***debian*** в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера.
-- Подключитесь к первому контейнеру с помощью ```docker exec``` и создайте текстовый файл любого содержания в ```/data```.
-- Добавьте ещё один файл в папку ```/data``` на хостовой машине.
-- Подключитесь во второй контейнер и отобразите листинг и содержание файлов в ```/data``` контейнера.
+Скачаем контейнер из образа ***centos*** c тегом 7
+```
+docker pull centos:7
+```
 
-## Задача 4 (*)
+Создаем папку data на хостовой машине
+```
+mkdir data
+```
 
-Воспроизведите практическую часть лекции самостоятельно.
+Запускаем контейнер Сentos 7 в фоновом режиме и  подключаем папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера
+```
+docker run -it -v /root/virtualisation/data:/data -d centos:7 bash
+```
 
-Соберите Docker-образ с Ansible, загрузите на Docker Hub и пришлите ссылку вместе с остальными ответами к задачам.
+Запустите второй контейнер из образа ***debian*** в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера.
+```
+docker pull debian:11
+docker run -it -v /root/virtualisation/data:/data -d debian:11 bash
+```
+
+Подключитесь к первому контейнеру с помощью ```docker exec``` и создайте текстовый файл любого содержания в ```/data```
+```
+docker exec -it 198f9c18d47b bash
+cd data
+yum install nano
+nano file1
+Hello everybody, I'm here!
+exit
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker6.png)
+
+Добавьте ещё один файл в папку ```/data``` на хостовой машине
+```
+cd data
+nano file2
+I see this file on my virtual host
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker7.png)
+
+Подключитесь во второй контейнер и отобразите листинг и содержание файлов в ```/data``` контейнера.
+```
+docker exec -it 8ab95a9d6e30 bash
+cd data
+ls data
+cat file1
+cat file2
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker8.png)
+
+## Задача 4 (*) Воспроизведите практическую часть лекции самостоятельно. Соберите Docker-образ с Ansible, загрузите на Docker Hub и пришлите ссылку вместе с остальными ответами к задачам.
 
 
 ---
