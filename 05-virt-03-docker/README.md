@@ -64,48 +64,42 @@ docker push leonid1984/custom-nginx
 
 ## Задача 2
 
-Посмотрите на сценарий ниже и ответьте на вопрос:
+#### Посмотрите на сценарий ниже и ответьте на вопрос:
 «Подходит ли в этом сценарии использование Docker-контейнеров или лучше подойдёт виртуальная машина, физическая машина? Может быть, возможны разные варианты?»
 
-Детально опишите и обоснуйте свой выбор.
-
---
-
-Сценарий:
-
-- высоконагруженное монолитное Java веб-приложение;
-- Nodejs веб-приложение;
-- мобильное приложение c версиями для Android и iOS;
-- шина данных на базе Apache Kafka;
-- Elasticsearch-кластер для реализации логирования продуктивного веб-приложения — три ноды elasticsearch, два logstash и две ноды kibana;
-- мониторинг-стек на базе Prometheus и Grafana;
-- MongoDB как основное хранилище данных для Java-приложения;
-- Gitlab-сервер для реализации CI/CD-процессов и приватный (закрытый) Docker Registry.
+1. Высоконагруженное монолитное Java веб-приложение;
+2. Nodejs веб-приложение;
+3. Мобильное приложение c версиями для Android и iOS;
+4. Шина данных на базе Apache Kafka;
+5. Elasticsearch-кластер для реализации логирования продуктивного веб-приложения — три ноды elasticsearch, два logstash и две ноды kibana;
+6. Мониторинг-стек на базе Prometheus и Grafana;
+7. MongoDB как основное хранилище данных для Java-приложения;
+8. Gitlab-сервер для реализации CI/CD-процессов и приватный (закрытый) Docker Registry.
 
 ## Задача 3
 
-Скачаем контейнер из образа ***centos*** c тегом 7
+1. Скачаем контейнер из образа ***centos*** c тегом 7
 ```
 docker pull centos:7
 ```
 
-Создаем папку data на хостовой машине
+2. Создаем папку data на хостовой машине
 ```
 mkdir data
 ```
 
-Запускаем контейнер Сentos 7 в фоновом режиме и  подключаем папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера
+3. Запускаем контейнер Сentos 7 в фоновом режиме и  подключаем папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера
 ```
 docker run -it -v /root/virtualisation/data:/data -d centos:7 bash
 ```
 
-Запустите второй контейнер из образа ***debian*** в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера.
+4. Запускаем второй контейнер из образа ***debian*** в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера.
 ```
 docker pull debian:11
 docker run -it -v /root/virtualisation/data:/data -d debian:11 bash
 ```
 
-Подключитесь к первому контейнеру с помощью ```docker exec``` и создайте текстовый файл любого содержания в ```/data```
+5. Подключаем к первому контейнеру с помощью ```docker exec``` и создайте текстовый файл любого содержания в ```/data```
 ```
 docker exec -it 198f9c18d47b bash
 cd data
@@ -116,7 +110,7 @@ exit
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker6.png)
 
-Добавьте ещё один файл в папку ```/data``` на хостовой машине
+6. Добавляем ещё один файл в папку ```/data``` на хостовой машине
 ```
 cd data
 nano file2
@@ -124,7 +118,7 @@ I see this file on my virtual host
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker7.png)
 
-Подключитесь во второй контейнер и отобразите листинг и содержание файлов в ```/data``` контейнера.
+7. Подключаемся во второй контейнер и отображаем листинг и содержание файлов в ```/data``` контейнера.
 ```
 docker exec -it 8ab95a9d6e30 bash
 cd data
@@ -134,16 +128,19 @@ cat file2
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker8.png)
 
-## Задача 4 (*) Воспроизведите практическую часть лекции самостоятельно. Соберите Docker-образ с Ansible, загрузите на Docker Hub и пришлите ссылку вместе с остальными ответами к задачам.
+## Задача 4 (*)
+#### Воспроизведите практическую часть лекции самостоятельно.
 
-Создаем папку для выполнения задания
+#### Cоберите Docker-образ с Ansible, загрузите на Docker Hub и пришлите ссылку вместе с остальными ответами к задачам.
+
+1. Создаем папку для выполнения задания
 
 ```
 mkdir ex4
 cd ex4
 ```
 
-Создаем dockerfile с кодом, аналогичным рассмотренному в лекции
+2. Создаем dockerfile с кодом, аналогичным рассмотренному в лекции
 
 ```
 nano Dockerfile
@@ -190,7 +187,7 @@ WORKDIR /ansible
 CMD [ "ansible-playbook", "--version" ]
 ```
 
-Запускаем сборку и отправку в [репозиторий](https://hub.docker.com/u/leonid1984) на docker hub нашего [контейнера](https://hub.docker.com/repository/docker/leonid1984/ansible/general) 
+3. Запускаем сборку и отправку в [репозиторий](https://hub.docker.com/u/leonid1984) на docker hub нашего [контейнера](https://hub.docker.com/repository/docker/leonid1984/ansible/general) 
 
 ```
 docker build -t leonid1984/ansible:2.10.0 .
@@ -198,6 +195,7 @@ docker push leonid1984/ansible:2.10.0
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker9.png)
 
-Проверяем работоспособность контейнера
+4. Проверяем работоспособность контейнера
+   
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker10.png)
 
