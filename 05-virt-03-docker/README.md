@@ -1,4 +1,4 @@
-## Домашнее задание к занятию 3. «Введение. Экосистема. Архитектура. Жизненный цикл Docker-контейнера» - Леонид Хорошев
+![2023-11-14_18-14-51](https://github.com/LeonidKhoroshev/virtd-homeworks/assets/114744186/15edccf1-d3eb-4871-b9f9-50c2aa39d16e)## Домашнее задание к занятию 3. «Введение. Экосистема. Архитектура. Жизненный цикл Docker-контейнера» - Леонид Хорошев
 
 
 ## Задача 1
@@ -136,12 +136,66 @@ cat file2
 
 ## Задача 4 (*) Воспроизведите практическую часть лекции самостоятельно. Соберите Docker-образ с Ansible, загрузите на Docker Hub и пришлите ссылку вместе с остальными ответами к задачам.
 
-
+Создаем папку для выполнения задания
+```
+mkdir ex4
+cd ex4
 ---
 
-### Как cдавать задание
+Создаем dockerfile с кодом, аналогичным рассмотренному в лекции
+```
+nano Dockerfile
+FROM alpine:3.14
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+RUN CARGO_NET_GIT_FETCH_WITH_CLI=1 && \
+    apk --no-cache add \
+        sudo \
+        python3\
+        py3-pip \
+        openssl \
+        ca-certificates \
+        sshpass \
+        openssh-client \
+        rsync \
+        git && \
+    apk --no-cache add --virtual build-dependencies \
+        python3-dev \
+        libffi-dev \
+        musl-dev \
+        gcc \
+        cargo \
+        openssl-dev \
+        libressl-dev \
+        build-base && \
+    pip install --upgrade pip wheel && \
+    pip install --upgrade cryptography cffi && \
+    pip uninstall ansible-base && \
+    pip install ansible-core && \
+    pip install ansible==2.10.0 && \
+    pip install --ignore-installed mitogen ansible-lint jmespath && \
+    pip install --upgrade pywinrm && \
+    apk del build-dependencies && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf /root/.cache/pip && \
+    rm -rf /root/.cargo
 
----
+RUN mkdir /ansible && \
+    mkdir -p /etc/ansible && \
+    echo 'localhost' > /etc/ansible/hosts
+
+WORKDIR /ansible
+
+CMD [ "ansible-playbook", "--version" ]
+```
+
+Запускаем сборку и отправку в [репозиторий](https://hub.docker.com/u/leonid1984) на docker hub нашего [контейнера](https://hub.docker.com/repository/docker/leonid1984/ansible/general) 
+
+```
+docker build -t leonid1984/ansible:2.10.0 .
+docker push leonid1984/ansible:2.10.0
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker9.png)
+
+Проверяем работоспособность контейнера
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-03-docker/docker/docker10.png)
 
