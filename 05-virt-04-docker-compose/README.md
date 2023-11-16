@@ -68,17 +68,29 @@ build {
 ```
 
 Примечание - образ необходимо конфигурировать в формате hcl, так как с формат json больше не поддерживается packer.
+
+7. Собираем образ:
+```
+ packer build image.pkr.hcl
+```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker1.png)
+
+8. Проверяем в консоли и в веб-интерфейсе Yandex Cloud
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker3.png)
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker2.png)
 
 
 ## Задача 2
-
-**2.2.*** **(Необязательное задание)**      
+     
 Создайте вашу первую виртуальную машину в YandexCloud с помощью Terraform (вместо использования веб-интерфейса YandexCloud).
 Используйте Terraform-код в директории ([src/terraform](https://github.com/netology-group/virt-homeworks/tree/virt-11/05-virt-04-docker-compose/src/terraform)).
 
-Чтобы получить зачёт, вам нужно предоставить вывод команды terraform apply и страницы свойств, созданной ВМ из личного кабинета YandexCloud.
+Выбираем создание виртуальной машины с помощью Terraform:
+1. Создаем файл main.tf на основе образа, созданного в рамках выполнения задания 1:
+```
+nano main.tf
+
+```
 
 ## Задача 3
 
