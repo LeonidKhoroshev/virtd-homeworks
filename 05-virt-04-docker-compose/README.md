@@ -129,10 +129,11 @@ resource "yandex_compute_instance" "test" {
 ```
 2. Проверяем конфигурацию:
 ```
+terraform validate
 terraform plan
 ```
 
-3. Создаем винтуальную машину на базе ОС Debian 11:
+3. Создаем виртуальную машину на базе ОС Debian 11:
 ```
 terraform apply
 ```
