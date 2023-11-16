@@ -90,7 +90,54 @@ build {
 ```
 nano main.tf
 
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+}
+provider "yandex" {
+  token = "y0_AgAAA-------------------------qePQxQr0K1VqSs"
+  cloud_id  = "b1g3ks25rm2qagep03qb"
+  folder_id = "b1gadttfn3t0cohh2hk2"
+}
+resource "yandex_compute_instance" "test" {
+  name                      = "test"
+  zone                      = "ru-central1-b"
+  hostname                  = "test.netology.cloud"
+  allow_stopping_for_update = true
+
+  resources {
+    cores  = 2
+    memory = 2
+  }
+  boot_disk {
+    initialize_params {
+      image_id    = "fd8fhfgeggglpdcbsade"
+      name        = "test"
+      type        = "network-nvme"
+      size        = "20"
+    }
+  }
+  network_interface {
+    subnet_id = "e2laj8khjjcf3lfs0l3p"
+    nat       = true
+  }
+  metadata = {
+    ssh-keys = "/root/.ssh/id_ed25519.pub"
 ```
+2. Проверяем конфигурацию:
+```
+terraform plan
+```
+
+3. Создаем винтуальную машину на базе ОС Debian 11:
+```
+terraform apply
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker4.png)
+
 
 ## Задача 3
 
