@@ -126,6 +126,9 @@ resource "yandex_compute_instance" "test" {
   }
   metadata = {
     ssh-keys = "/root/.ssh/id_ed25519.pub"
+    }
+  }
+}
 ```
 2. Проверяем конфигурацию:
 ```
