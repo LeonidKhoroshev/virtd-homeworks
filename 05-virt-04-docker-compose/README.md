@@ -6,6 +6,8 @@
 
 #### Создайте собственный образ любой операционной системы (например, debian-11) с помощью Packer версии 1.7.0.
 
+Задание 1 выполнено на VPS под управлением ОС Ubuntu 22.04.
+
 1. Устанавливаем дистрибутив Packer из официального [репозитория](https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli#precompiled-binaries) согласно [инструкции](https://cloud.yandex.ru/docs/tutorials/infrastructure-management/packer-quickstart):
 ```
 su root
@@ -81,15 +83,13 @@ build {
 
 
 ## Задача 2
-     
+
 Создайте вашу первую виртуальную машину в YandexCloud с помощью Terraform (вместо использования веб-интерфейса YandexCloud).
 Используйте Terraform-код в директории ([src/terraform](https://github.com/netology-group/virt-homeworks/tree/virt-11/05-virt-04-docker-compose/src/terraform)).
 
 Выбираем создание виртуальной машины с помощью Terraform:
 1. Создаем файл main.tf на основе образа, созданного в рамках выполнения задания 1:
 ```
-nano main.tf
-
 terraform {
   required_providers {
     yandex = {
@@ -98,7 +98,7 @@ terraform {
   }
 }
 provider "yandex" {
-  token = "y0_AgAAA-------------------------qePQxQr0K1VqSs"
+  token = "y0_AgAAAAAp7--------------------PQxQr0K1VqSs"
   cloud_id  = "b1g3ks25rm2qagep03qb"
   folder_id = "b1gadttfn3t0cohh2hk2"
 }
@@ -107,7 +107,6 @@ resource "yandex_compute_instance" "test" {
   zone                      = "ru-central1-b"
   hostname                  = "test.netology.cloud"
   allow_stopping_for_update = true
-
   resources {
     cores  = 2
     memory = 2
@@ -117,7 +116,7 @@ resource "yandex_compute_instance" "test" {
       image_id    = "fd8fhfgeggglpdcbsade"
       name        = "test"
       type        = "network-nvme"
-      size        = "20"
+      size        = "15"
     }
   }
   network_interface {
@@ -125,18 +124,33 @@ resource "yandex_compute_instance" "test" {
     nat       = true
   }
   metadata = {
-    ssh-keys = "/root/.ssh/id_ed25519.pub"
-    }
+    user-data = "${file("/root/terraform/meta.yml")}"
+  }
+  scheduling_policy {
+    preemptible = true
   }
 }
 ```
-2. Проверяем конфигурацию:
+Здесь по сравнению с примером из лекции внесен ряд изменений, в разделе metadata вместо ssh ключа добавлен параметр user-data со ссылкой на файл meta.yml, в котором создан пользователь и указан ssh ключ для подключения, а также добавлен блок scheduling_polic, который позволяет сделать конфигурируемую машину прерываемой, чтЯндлеко по тарификации YandexCloud на 50% дешевле.
+
+2. Cоздаем файл meta.yml:
 ```
-terraform validate
-terraform plan
+terra#cloud-config
+users:
+  - name: leo
+    groups: sudo
+    shell: /bin/bash
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    ssh-authorized-keys:
+      - ssh-rsa B3NzaC1yc2EA--------nqVgpcANVz root@localhost.localdomain
 ```
 
-3. Создаем виртуальную машину на базе ОС Debian 11:
+3. Проверяем конфигурацию:
+```
+terraform validate
+```
+
+4. Создаем виртуальную машину на базе ОС Debian 11:
 ```
 terraform apply
 ```
