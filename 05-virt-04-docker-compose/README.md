@@ -162,6 +162,24 @@ terraform apply
 С помощью Ansible и Docker Compose разверните на виртуальной машине из предыдущего задания систему мониторинга на основе Prometheus/Grafana.
 Используйте Ansible-код в директории ([src/ansible](https://github.com/netology-group/virt-homeworks/tree/virt-11/05-virt-04-docker-compose/src/ansible)).
 
+1. Создаем файл inventory для возможности удаленной настройки программного обеспечения:
+```
+nano /etc/ansible/inventory
+
+[nodes:children]
+manager
+
+[manager]
+test.netology.cloud ansible_host=158.160.76.57
+```
+
+```
+ansible all --list-hosts
+hosts (1):
+   test.netology.cloud
+```
+
+
 Чтобы получить зачёт, вам нужно предоставить вывод команды "docker ps" , все контейнеры, описанные в [docker-compose](https://github.com/netology-group/virt-homeworks/blob/virt-11/05-virt-04-docker-compose/src/ansible/stack/docker-compose.yaml),  должны быть в статусе "Up".
 
 ## Задача 4
