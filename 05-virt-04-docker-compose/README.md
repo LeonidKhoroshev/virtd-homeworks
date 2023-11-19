@@ -1,4 +1,4 @@
-# Домашнее задание к занятию 4. «Оркестрация группой Docker-контейнеров на примере Docker Compose»
+# Домашнее задание к занятию 4. «Оркестрация группой Docker-контейнеров на примере Docker Compose» - Леонид Хорошев
 
 Задание выполнено на VPS под управлением ОС Ubuntu 22.04
 
@@ -79,6 +79,7 @@ build {
 
 8. Проверяем в консоли и в веб-интерфейсе Yandex Cloud
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker3.png)
+
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker2.png)
 
 
@@ -414,9 +415,11 @@ services:
 ```
 ansible-playbook provision.yml
 ```
+
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker5.png)
 
 6. Проверяем работу контейнеров:
+
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker6.png)
 
 
@@ -430,6 +433,7 @@ ansible-playbook provision.yml
 4. Подождите 5-10 минут, чтобы система мониторинга успела накопить данные.
 
 Переходим по адресу http://158.160.76.57:3000, заходим вод логином и паролем admin:
+
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker7.png)
 
 ## Задача 5 (*)
