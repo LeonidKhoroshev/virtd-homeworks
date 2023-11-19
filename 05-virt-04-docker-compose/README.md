@@ -172,7 +172,7 @@ manager
 [manager]
 test.netology.cloud ansible_host=158.160.76.57
 ```
-
+Проверяем:
 ```
 ansible all --list-hosts
 hosts (1):
