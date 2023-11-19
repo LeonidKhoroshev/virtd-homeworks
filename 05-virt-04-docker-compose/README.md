@@ -178,6 +178,12 @@ ansible all --list-hosts
 hosts (1):
    test.netology.cloud
 ```
+Пробное подключение:
+```
+ansible all -m ping -u leo
+test.netology.cloud | SUCCESS => {
+    "changed": false,
+```
 
 
 Чтобы получить зачёт, вам нужно предоставить вывод команды "docker ps" , все контейнеры, описанные в [docker-compose](https://github.com/netology-group/virt-homeworks/blob/virt-11/05-virt-04-docker-compose/src/ansible/stack/docker-compose.yaml),  должны быть в статусе "Up".
