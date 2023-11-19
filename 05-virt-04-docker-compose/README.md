@@ -440,8 +440,53 @@ ansible-playbook provision.yml
 
 Создайте вторую ВМ и подключите её к мониторингу, развёрнутому на первом сервере.
 
-Чтобы получить зачёт, предоставьте:
+1. Создаем вторую ноду также из образа, созданного в Задании 1.
+Для этого создадим директорию, скопируем туда файлы terraform, в которых изменим название ноды с test на node02. Остальные параметры можно оставить без изменений.
+```
+mkdir node02
+cp terraform/main.tf node02/main.tf
+cp terraform/meta.yml node02/metaОшиб.yml
+```
 
-- скриншот из Grafana, на котором будут отображаться метрики добавленного вами сервера.
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker8.png)
 
+```
+terraform apply
+```
 
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker9.png)
+
+На скриншоте показано уведомление об ошибке, потому что виртуальная машина была создана с третьего раза (первые 2 раза не изменил в main.tf названия диска и ВМ с test на node02).
+
+2. Для добавления второй ноды в нашу систему мониторинга, развернем на ней prometheus из плейбука в задании 3. Для этого добавим ноду в inventory файл (первую ноду закомментируем, так как на ней никаких действий проводить не надо):
+
+```
+nano /etc/ansible/inventory
+[nodes:children]
+manager
+
+[manager]
+#test.netology.cloud ansible_host=158.160.76.57
+node02.netology.cloud ansible_host=84.201.138.97
+```
+
+3. Запускаем наш плейбук:
+```
+ansible-playbook provision.yml
+```
+
+4. Возвращаемся в веб-интерфейс [Графаны](http://158.160.76.57:3000) и добавляем в мониторинг созданный хост:
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker10.png)
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker11.png)
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker12.png)
+
+5. Загрузим предлагаемые дашборды:
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker13.png)
+
+6. Мониторинг настроен:
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker14.png)
