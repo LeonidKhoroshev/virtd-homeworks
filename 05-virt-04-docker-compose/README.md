@@ -270,7 +270,7 @@ nano provision.yml
       command: docker-compose -f /home/leo/docker-compose.yml up -d
 ```
 
-4. Копируем к себе в папку docker-compose.yml с контейнерами, планируемыми к запуску на виртуальной машине в YandexCloud:
+4. Копируем к себе в папку docker-compose.yml с контейнерами, планируемыми к запуску на виртуальной машине в YandexCloud (при запуске файла из лекции 3 из 5 контейнеров были перманентно в режиме restarting, поэтому файл немного [доработан](https://github.com/Einsteinish/Docker-Compose-Prometheus-and-Grafana):
 
 ```
 nano docker-compose.yml
@@ -278,7 +278,7 @@ nano docker-compose.yml
 version: '2.1'
 
 networks:
-  monitoring:
+  monitor-net:
     driver: bridge
 
 volumes:
@@ -298,11 +298,13 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/etc/prometheus/console_libraries'
       - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=15d'
+      - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
-    restart: always
+    restart: unless-stopped
+    expose:
+      - 9090
     networks:
-      - monitoring
+      - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -314,9 +316,11 @@ services:
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
-    restart: always
+    restart: unless-stopped
+    expose:
+      - 9093
     networks:
-      - monitoring
+      - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -332,40 +336,46 @@ services:
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
-    restart: always
+    restart: unless-stopped
+    expose:
+      - 9100
     networks:
-      - monitoring
+      - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    image: gcr.io/google-containers/cadvisor:v0.34.0
     container_name: cadvisor
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
-      - /cgroup:/cgroup:ro
-    restart: always
+      #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    restart: unless-stopped
+    expose:
+      - 8080
     networks:
-      - monitoring
+      - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   grafana:
-    image: grafana/grafana:7.4.2
+    image: grafana/grafana:6.7.2
     container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
-      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
-      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
-    restart: always
+    restart: unless-stopped
+    expose:
+      - 3000
     networks:
-      - monitoring
+      - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -373,8 +383,10 @@ services:
     image: prom/pushgateway:v1.2.0
     container_name: pushgateway
     restart: unless-stopped
+    expose:
+      - 9091
     networks:
-      - monitoring
+      - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
@@ -382,18 +394,18 @@ services:
     image: stefanprodan/caddy
     container_name: caddy
     ports:
-      - "0.0.0.0:3000:3000"
-      - "0.0.0.0:9090:9090"
-      - "0.0.0.0:9093:9093"
-      - "0.0.0.0:9091:9091"
+      - "3000:3000"
+      - "9090:9090"
+      - "9093:9093"
+      - "9091:9091"
     volumes:
       - ./caddy:/etc/caddy
     environment:
-      - ADMIN_USER=${ADMIN_USER:-admin}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
-    restart: always
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    restart: unless-stopped
     networks:
-      - monitoring
+      - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 ```
@@ -404,8 +416,11 @@ ansible-playbook provision.yml
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker5.png)
 
+6. Проверяем работу контейнеров:
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker6.png)
 
-Чтобы получить зачёт, вам нужно предоставить вывод команды "docker ps" , все контейнеры, описанные в [docker-compose](https://github.com/netology-group/virt-homeworks/blob/virt-11/05-virt-04-docker-compose/src/ansible/stack/docker-compose.yaml),  должны быть в статусе "Up".
+
+
 
 ## Задача 4
 
@@ -414,12 +429,8 @@ ansible-playbook provision.yml
 3. Изучите доступный интерфейс, найдите в интерфейсе автоматически созданные docker-compose-панели с графиками([dashboards](https://grafana.com/docs/grafana/latest/dashboards/use-dashboards/)).
 4. Подождите 5-10 минут, чтобы система мониторинга успела накопить данные.
 
-Чтобы получить зачёт, предоставьте: 
-
-- скриншот работающего веб-интерфейса Grafana с текущими метриками, как на примере ниже.
-<p align="center">
-  <img width="1200" height="600" src="./assets/yc_02.png">
-</p>
+Переходим по адресу http://158.160.76.57:3000, заходим вод логином и паролем admin:
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker7.png)
 
 ## Задача 5 (*)
 
