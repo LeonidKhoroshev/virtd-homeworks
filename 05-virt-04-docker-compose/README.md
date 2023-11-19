@@ -185,6 +185,225 @@ test.netology.cloud | SUCCESS => {
     "changed": false,
 ```
 
+2. Проверяем корректность конфигурации Ansible:
+```
+cat /etc/ansible/ansible.cfg
+
+[defaults]
+inventory=./inventory
+deprecation_warnings=False
+command_warnings=False
+ansible_port=22
+interpreter_python=/usr/bin/python3
+host_key_checking=False
+```
+
+3. Составляем  provision.yml (аналогично представленному в материалах, но с учетом изменений, необходимых для работы с Debian):
+```
+nano provision.yml
+
+- hosts: nodes
+  become: yes
+  become_user: root
+  remote_user: leo
+
+  tasks:
+    - name: Create directory for ssh-keys
+      file: state=directory mode=0700 dest=/root/.ssh/
+
+    - name: Adding rsa-key in /root/.ssh/authorized_keys
+      copy: src=~/.ssh/id_rsa.pub dest=/root/.ssh/authorized_keys owner=root mode=0600
+      ignore_errors: yes
+
+    - name: Checking DNS
+      command: host -t A google.com
+
+    - name: Installing tools
+      apt:
+        name={{ item }}
+        update_cache=yes
+        state=present
+      with_items:
+        - git
+        - curl
+        - ca-certificates
+        - gnupg
+
+    - name: Add gpg-keys
+      command: sudo install -m 0755 -d /etc/apt/keyrings
+      command: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      command: sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+    - name: Add the repository to Apt sources
+      command: echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bullseye oldstable" /
+      | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      command: sudo apt update
+
+    - name: Installing docker package
+      apt:
+        name={{ item }}
+        state=present
+        update_cache=yes
+      with_items:
+        - docker-ce-cli
+        - containerd.io
+        - docker-ce
+        - docker-buildx-plugin
+        - docker-compose-plugin
+
+    - name: Enable docker daemon
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Write docker-compose files
+      become: yes
+      copy:
+        src: /root/virtualisation/docker-compose.yml
+        dest: /home/leo/docker-compose.yml
+
+    - name: Pull all images in compose
+      command: docker-compose -f /home/leo/docker-compose.yml pull
+
+    - name: Up all services in compose
+      command: docker-compose -f /home/leo/docker-compose.yml up -d
+```
+
+4. Копируем к себе в папку docker-compose.yml с контейнерами, планируемыми к запуску на виртуальной машине в YandexCloud:
+
+```
+nano docker-compose.yml
+
+version: '2.1'
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.17.1
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      org.label-schema.group: "monitoring"
+
+  alertmanager:
+    image: prom/alertmanager:v0.20.0
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      org.label-schema.group: "monitoring"
+
+  nodeexporter:
+    image: prom/node-exporter:v0.18.1
+    container_name: nodeexporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      org.label-schema.group: "monitoring"
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      org.label-schema.group: "monitoring"
+
+  grafana:
+    image: grafana/grafana:7.4.2
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      org.label-schema.group: "monitoring"
+
+  pushgateway:
+    image: prom/pushgateway:v1.2.0
+    container_name: pushgateway
+    restart: unless-stopped
+    networks:
+      - monitoring
+    labels:
+      org.label-schema.group: "monitoring"
+
+  caddy:
+    image: stefanprodan/caddy
+    container_name: caddy
+    ports:
+      - "0.0.0.0:3000:3000"
+      - "0.0.0.0:9090:9090"
+      - "0.0.0.0:9093:9093"
+      - "0.0.0.0:9091:9091"
+    volumes:
+      - ./caddy:/etc/caddy
+    environment:
+      - ADMIN_USER=${ADMIN_USER:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+    restart: always
+    networks:
+      - monitoring
+    labels:
+      org.label-schema.group: "monitoring"
+```
+
+5. Запускаем наш плейбук:
+```
+ansible-playbook provision.yml
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-04-docker-compose/docker/docker5.png)
+
 
 Чтобы получить зачёт, вам нужно предоставить вывод команды "docker ps" , все контейнеры, описанные в [docker-compose](https://github.com/netology-group/virt-homeworks/blob/virt-11/05-virt-04-docker-compose/src/ansible/stack/docker-compose.yaml),  должны быть в статусе "Up".
 
