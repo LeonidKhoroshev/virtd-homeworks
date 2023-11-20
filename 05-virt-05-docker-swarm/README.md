@@ -233,6 +233,34 @@ ansible-playbook provision.yml
 
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm5.png)
 
+3. Переходим на ноду master-01 и инициализируем docker swarm кластер:
+
+```
+ssh leo@158.160.18.199
+docker swarm init --advertise-addr 10.129.0.23
+```
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm6.png)
+
+4. Получаем команды для подключения нод:
+
+
+Manager:
+```
+docker swarm join-token -q manager
+SWMTKN-1-1l8ur1uj54p63oc0gelp7zut99kbdn9p8vssxoasqhprbzwqbw-b2ic09xpwq5xhyp8um6ml3ex2
+```
+
+Worker:
+```
+docker swarm join-token -q worker
+SWMTKN-1-1l8ur1uj54p63oc0gelp7zut99kbdn9p8vssxoasqhprbzwqbw-2uu082ss5rx14i7pugmo0vq72
+```
+
+
+5. Соединяем ноды в кластер:
+
+
 
 Чтобы получить зачёт, предоставьте скриншот из терминала (консоли) с выводом команды:
 ```
