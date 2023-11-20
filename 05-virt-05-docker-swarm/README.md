@@ -176,6 +176,62 @@ ansible all -m ping -u leo
 
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm4.png)
 
+Готовим playbook для установки docker на всех хостах:
+```
+nano playbook.yml
+
+- hosts: nodes
+  become: yes
+  become_user: root
+  remote_user: leo
+
+  tasks:
+    - name: Create directory for ssh-keys
+      file: state=directory mode=0700 dest=/root/.ssh/
+
+    - name: Adding rsa-key in /root/.ssh/authorized_keys
+      copy: src=~/.ssh/id_rsa.pub dest=/root/.ssh/authorized_keys owner=root mode=0600
+      ignore_errors: yes
+
+    - name: Installing tools
+      yum:
+        name={{ item }}
+        update_cache=yes
+        state=present
+      with_items:
+        - git
+        - curl
+        - ca-certificates
+        - gnupg
+
+    - name: Add docker repository
+      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Installing docker package
+      yum:
+        name={{ item }}
+        state=present
+        update_cache=yes
+      with_items:
+        - docker-ce-cli
+        - containerd.io
+        - docker-ce
+        - docker-buildx-plugin
+        - docker-compose-plugin
+
+    - name: Enable docker daemon
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+```
+Запускаем процесс установки:
+
+```
+ansible-playbook provision.yml
+```
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm5.png)
 
 
 Чтобы получить зачёт, предоставьте скриншот из терминала (консоли) с выводом команды:
