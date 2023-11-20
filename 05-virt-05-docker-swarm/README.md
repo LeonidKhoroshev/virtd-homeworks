@@ -260,12 +260,29 @@ SWMTKN-1-1l8ur1uj54p63oc0gelp7zut99kbdn9p8vssxoasqhprbzwqbw-2uu082ss5rx14i7pugmo
 
 5. Соединяем ноды в кластер:
 
+manager-02
+```
+ssh leo@158.160.65.20
+sudo su
+docker swarm join --token SWMTKN-1-1l8ur1uj54p63oc0gelp7zut99kbdn9p8vssxoasqhprbzwqbw-b2ic09xpwq5xhyp8um6ml3ex2 10.129.0.23
+```
+manager-03 - аналогичная последовательность (меняется только ip адрес при подключении по протоколу ssh).
 
+worker-01:
+```
+ssh leo@158.160.69.55
+sudo su
+docker swarm join --token SWMTKN-1-1l8ur1uj54p63oc0gelp7zut99kbdn9p8vssxoasqhprbzwqbw-2uu082ss5rx14i7pugmo0vq72 10.129.0.23
+exit
+```
+worker-02 и worker-03 - аналогичная последовательность (меняется только ip адрес при подключении по протоколу ssh).
 
-Чтобы получить зачёт, предоставьте скриншот из терминала (консоли) с выводом команды:
+Получившийся кластер:
 ```
 docker node ls
 ```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm7.png)
+
 
 ## Задача 3
 
