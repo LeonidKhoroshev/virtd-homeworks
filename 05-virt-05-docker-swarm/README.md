@@ -103,6 +103,81 @@ terraform apply
 ```
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm1.png)
 
+2. C помощью Ansible установим требуемое программное обеспечение (Docker):
+
+Создадим Inventory файл
+```
+nano /etc/ansible/inventory
+
+[nodes:children]
+manager
+worker
+
+[manager]
+158.160.18.199 ansible_user=leo
+158.160.65.20  ansible_user=leo
+158.160.79.173 ansible_user=leo
+
+[worker]
+158.160.69.55 ansible_user=leo
+158.160.75.3  ansible_user=leo
+84.201.136.153 ansible_user=leo
+```
+
+Проверяем:
+```
+ansible all --list-host
+  hosts (6):
+    158.160.18.199
+    158.160.65.20
+    158.160.79.173
+    158.160.69.55
+    158.160.75.3
+    84.201.136.153
+```
+Проверяем соединение:
+```
+ansible all -m ping -u leo
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm2.png)
+
+Неудача, причина - отсутствие phyton на управляемых хостах. Воспользуемся модулем [Ansible raw](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/raw_module.html) для устранения данной проблемы.
+Дополняем Inventory файл строками следующего содержания:
+
+```
+[children:vars]
+ansible_python=/usr/bin/python
+```
+Далее пишем короткий плейбук для установки phyton на наши виртуальные хосты:
+```
+nano playbook.yml
+
+- hosts: nodes
+  gather_facts: false
+  become: true
+  become_user: root
+  remote_user: leo
+  tasks:
+  - name: install python
+    raw: test -e /usr/bin/python || ( yum update && yum install python -y )
+```
+Устанавливаем python:
+
+```
+ansible-playbook playbook.yml
+```
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm3.png)
+
+Проверяем:
+```
+ansible all -m ping -u leo
+```
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm4.png)
+
+
+
 Чтобы получить зачёт, предоставьте скриншот из терминала (консоли) с выводом команды:
 ```
 docker node ls
@@ -117,9 +192,6 @@ docker node ls
 docker service ls
 ```
 
-```
-terraform apply
-```
 
 ## Задача 4 (*)
 
