@@ -315,17 +315,6 @@ docker stack ps monitoring
 ![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm10.png)
 
 
-
-
-
-
-
-
-
-
-
-
-
 ## Задача 4 (*)
 
 Выполните на лидере Docker Swarm-кластера команду, указанную ниже, и дайте письменное описание её функционала — что она делает и зачем нужна:
@@ -333,5 +322,10 @@ docker stack ps monitoring
 # см.документацию: https://docs.docker.com/engine/swarm/swarm_manager_locking/
 docker swarm update --autolock=true
 ```
+
+Выполняем данную команду на ноде manager-01
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm11.png)
+
 
 
