@@ -288,10 +288,42 @@ docker node ls
 
 Создайте ваш первый, готовый к боевой эксплуатации кластер мониторинга, состоящий из стека микросервисов.
 
-Чтобы получить зачёт, предоставьте скриншот из терминала (консоли), с выводом команды:
+За основу нашего кластера взят немного модифицированный  docker-compose [файл](https://github.com/Otus-DevOps-2019-08/sgremyachikh_microservices/blob/master/docker/docker-compose-monitoring.yml)
+
+Копируем его на ноду manager-01 и поднимаем наш стек:
+```
+docker stack deploy --compose-file docker-compose.yml monitoring
+```
+
+Проверяем:
+
 ```
 docker service ls
 ```
+
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm8.png)
+
+Смотрим, как задействованы наши ноды в кластере:
+```
+docker stack ps monitoring
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm9.png)
+
+Заходим в интерфейс Grafana, "чтоб наверняка"
+
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm10.png)
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Задача 4 (*)
