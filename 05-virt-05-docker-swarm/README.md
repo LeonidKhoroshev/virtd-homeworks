@@ -1,29 +1,4 @@
-# Домашнее задание к занятию 5. «Оркестрация кластером Docker контейнеров на примере Docker Swarm»
-
-## Как сдавать задания
-
-Обязательны к выполнению задачи без звёздочки. Их нужно выполнить, чтобы получить зачёт и диплом о профессиональной переподготовке.
-
-Задачи со звёдочкой (*) — это дополнительные задачи и/или задачи повышенной сложности. Их выполнять не обязательно, но они помогут вам глубже понять тему.
-
-Домашнее задание выполните в файле readme.md в GitHub-репозитории. В личном кабинете отправьте на проверку ссылку на .md-файл в вашем репозитории.
-
-Любые вопросы по решению задач задавайте в чате учебной группы.
-
----
-
-
-## Важно
-
-**Перед началом работы над дипломным заданием изучите [Инструкция по экономии облачных ресурсов](https://github.com/netology-code/devops-materials/blob/master/cloudwork.MD).**
-
-
-1. Перед отправкой работы на проверку удаляйте неиспользуемые ресурсы.
-Это нужно, чтобы не расходовать средства, полученные в результате использования промокода.
-Подробные рекомендации [здесь](https://github.com/netology-code/virt-homeworks/blob/virt-11/r/README.md).
-
-2. [Ссылки для установки открытого ПО](https://github.com/netology-code/devops-materials/blob/master/README.md).
-
+# Домашнее задание к занятию 5. «Оркестрация кластером Docker контейнеров на примере Docker Swarm» - Леонид Хорошев
 ---
 
 ## Задача 1
@@ -36,7 +11,93 @@
 
 ## Задача 2
 
-Создайте ваш первый Docker Swarm-кластер в Яндекс Облаке.
+#### Создайте ваш первый Docker Swarm-кластер в Яндекс Облаке.
+
+1. Развернем в Яндекс облаке 6 виртуальных машин (Centos7) по 3 управляющих (manager) и управляемых (worker). Для оптимизации процесса воспользуемся terraform:
+```
+nano main.tf
+
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+}
+
+provider "yandex" {
+  token = "y0_AgAAAAAp7qigAATuwQAAAADhAMvANnKdk1oJS8uomqePQxQr0K1VqSs"
+  cloud_id  = "b1g3ks25rm2qagep03qb"
+  folder_id = "b1gadttfn3t0cohh2hk2"
+}
+
+resource "yandex_compute_instance" "manager" {
+  count                     = 3
+  name                      = format("manager-%02d", count.index + 1)
+  zone                      = "ru-central1-b"
+  hostname                  = format("manager-%02d", count.index + 1)
+  allow_stopping_for_update = true
+
+  resources {
+    cores  = 2
+    memory = 2
+    core_fraction = 20
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id    = "fd8vm24pae6k98274k7o"
+      type        = "network-ssd"
+      size        = "15"
+    }
+  }
+
+  network_interface {
+    subnet_id = "e2laj8khjjcf3lfs0l3p"
+    nat       = true
+  }
+
+  metadata = {
+    user-data = "${file("/root/terraform/meta.yml")}"
+  }
+  scheduling_policy {
+    preemptible = true
+
+resource "yandex_compute_instance" "worker" {
+  count                     = 3
+  name                      = format("worker-%02d", count.index + 1)
+  zone                      = "ru-central1-b"
+  hostname                  = format("worker-%02d", count.index + 1)
+  allow_stopping_for_update = true
+
+  resources {
+    cores  = 2
+    memory = 2
+    core_fraction = 20
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id    = "fd8vm24pae6k98274k7o"
+      type        = "network-ssd"
+      size        = "15"
+    }
+  }
+
+  network_interface {
+    subnet_id = "e2laj8khjjcf3lfs0l3p"
+    nat       = true
+  }
+
+  metadata = {
+    user-data = "${file("/root/terraform/meta.yml")}"
+  }
+  scheduling_policy {
+    preemptible = true
+  }
+}
+```
+
 
 Чтобы получить зачёт, предоставьте скриншот из терминала (консоли) с выводом команды:
 ```
@@ -50,6 +111,10 @@ docker node ls
 Чтобы получить зачёт, предоставьте скриншот из терминала (консоли), с выводом команды:
 ```
 docker service ls
+```
+
+```
+terraform apply
 ```
 
 ## Задача 4 (*)
