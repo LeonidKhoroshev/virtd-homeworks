@@ -98,6 +98,10 @@ resource "yandex_compute_instance" "worker" {
 }
 ```
 
+```
+terraform apply
+```
+![Alt text](https://github.com/LeonidKhoroshev/virtd-homeworks/blob/main/05-virt-05-docker-swarm/swarm/Swarm1.png)
 
 Чтобы получить зачёт, предоставьте скриншот из терминала (консоли) с выводом команды:
 ```
